@@ -1,3 +1,4 @@
+USE BikeStores
 SELECT 
 	ord.order_id,
 	CONCAT(cus.first_name,' ',cus.last_name) as 'customers',
@@ -7,6 +8,7 @@ SELECT
 	SUM(ite.quantity) as 'total_unit',
 	SUM(ite.quantity * ite.list_price) as 'revenue',
 	pro.product_name,
+	bra.brand_name,
 	cat.category_name,
 	sto.store_name,
 	CONCAT(sta.first_name,' ',sta.last_name) as 'sales rep'
@@ -17,12 +19,14 @@ JOIN sales.order_items as ite
 ON ord.order_id = ite.order_id
 JOIN production.products as pro
 ON ite.product_id = pro.product_id
+JOIN production.brands as bra
+ON pro.brand_id = bra.brand_id
 JOIN production.categories as cat
 ON pro.category_id = cat.category_id
 JOIN sales.stores as sto
 ON ord.store_id = sto.store_id
 JOIN sales.staffs as sta
-ON ord.store_id = sta.store_id
+ON ord.staff_id = sta.staff_id
 GROUP BY
 	ord.order_id,
 	CONCAT(cus.first_name,' ',cus.last_name),
@@ -30,6 +34,7 @@ GROUP BY
 	cus.state,
 	ord.order_date,
 	pro.product_name,
+	bra.brand_name,
 	cat.category_name,
 	sto.store_name,
 	CONCAT(sta.first_name,' ',sta.last_name)
